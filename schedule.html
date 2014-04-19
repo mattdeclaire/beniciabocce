@@ -1,0 +1,64 @@
+<div id="bocce-schedule">loading...</div>
+
+<style>
+#bocce-schedule table {
+	margin: 0 auto;
+	border-collapse: collapse;
+}
+
+#bocce-schedule th,
+#bocce-schedule td {
+	padding: 0.25em 0.5em;
+	border: 1px solid #CCC;
+}
+
+#bocce-schedule td.court {
+	text-align: center;
+}
+</style>
+
+<script>
+jQuery(function($) {
+	var key = '1HJP6Ws5T5zQ4F6QW3UGrJb_Cj8VlsAcugxt8xFIpO7s',
+		url = 'https://spreadsheets.google.com/feeds/list/' + key + '/od6/public/basic?alt=json';
+
+	$.getJSON(url, function(data) {
+		var games = $.map(data.feed.entry, function(entry) {
+			var cells = $.map(entry.content['$t'].split(','), function(cell) {
+				return cell.replace(/^.*: /, '');
+			});
+
+			return {
+				time: entry.title['$t'],
+				court: cells[0],
+				home: cells[1],
+				visitor: cells[2]
+			};
+		});
+
+		var html = '<table>';
+
+		html += '<tr>';
+		html += '<th class="time">date / time</th>';
+		html += '<th class="court">court</th>';
+		html += '<th class="home">home</th>';
+		html += '<th class="visitor">visitor</th>';
+		html += '</tr>';
+
+		$.each(games, function(ndx, game) {
+			if (!game.home) return;
+
+			html += '<tr>';
+			html += '<td class="time">' + game.time + '</td>';
+			html += '<td class="court">' + game.court + '</td>';
+			html += '<td class="home">' + game.home + '</td>';
+			html += '<td class="visitor">' + game.visitor + '</td>';
+			html += '</tr>';
+		});
+
+		html += '</table>';
+
+		$('#bocce-schedule').html(html);
+	});
+});
+</script>
