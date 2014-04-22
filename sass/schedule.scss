@@ -1,0 +1,20 @@
+.bocce-schedule {
+	.loading {
+		text-align: center;
+	}
+
+	table {
+		margin: 0 auto;
+		border-collapse: collapse;
+	}
+
+	th,
+	td {
+		padding: 0.25em 0.5em;
+		border: 1px solid #CCC;
+	}
+
+	td.court {
+		text-align: center;
+	}
+}
