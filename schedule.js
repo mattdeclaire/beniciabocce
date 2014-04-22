@@ -1,22 +1,12 @@
 (function($) {
-	var key = '1HJP6Ws5T5zQ4F6QW3UGrJb_Cj8VlsAcugxt8xFIpO7s';
+	var key = '1HJP6Ws5T5zQ4F6QW3UGrJb_Cj8VlsAcugxt8xFIpO7s',
+		sheet = '2096572205',
+		$el = $('#bocce-schedule'),
+		url = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + sheet + '/public/basic?alt=json';
 
-	$.fn.schedule = function(sheet) {
-		return this.each(function() {
-			var $el  = $(this).html('<div class="loading">loading...</div>'),
-				url = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + sheet + '/public/basic?alt=json';
+	$el.html('<div class="loading">loading...</div>');
 
-			$.getJSON(url, function(data) {
-				var games = getGames(data),
-					html = scheduleHtml(games);
-
-				$el.html(html);
-			});
-
-		});
-	};
-
-	function getGames(data) {
+	$.getJSON(url, function(data) {
 		var games = $.map(data.feed.entry, function(entry) {
 			var cells = $.map(entry.content.$t.split(','), function(cell) {
 				return cell.replace(/^.*: /, '');
@@ -30,10 +20,6 @@
 			};
 		});
 
-		return games;
-	}
-
-	function scheduleHtml(games) {
 		var html = '<table>';
 
 		html += '<tr>';
@@ -56,6 +42,6 @@
 
 		html += '</table>';
 
-		return html;
-	}
+		$el.html(html);
+	});
 })(jQuery);
