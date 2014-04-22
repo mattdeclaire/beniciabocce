@@ -3,6 +3,10 @@
 		text-align: center;
 	}
 
+	.team-select {
+		text-align: center;
+	}
+
 	table {
 		margin: 0 auto;
 		border-collapse: collapse;
@@ -16,5 +20,13 @@
 
 	td.court {
 		text-align: center;
+	}
+
+	tr.chosen {
+		background-color: #F0F3EA;
+	}
+
+	td.chosen {
+		background-color: #DAECB9;
 	}
 }

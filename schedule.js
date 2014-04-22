@@ -20,7 +20,25 @@
 			};
 		});
 
-		var html = '<table>';
+		var teams = [];
+		$.each(games, function(ndx, game) {
+			if ($.inArray(game.home, teams) == -1) teams.push(game.home);
+			if ($.inArray(game.visitor, teams) == -1) teams.push(game.visitor);
+		});
+		teams.sort();
+
+		var html = '';
+
+		html += '<div class="team-select">';
+		html += '<select>';
+		html += '<option value="">choose a team</option>';
+		$.each(teams, function(ndx, team) {
+			html += '<option value="' + ndx + '">' + team + '</option>';
+		});
+		html += '</select>';
+
+		html += '<table>';
+		html += '</div>';
 
 		html += '<tr>';
 		html += '<th class="time">date / time</th>';
@@ -32,16 +50,37 @@
 		$.each(games, function(ndx, game) {
 			if (!game.home) return;
 
+			var homeTeamNdx = $.inArray(game.home, teams),
+				visitorTeamNdx = $.inArray(game.visitor, teams);
+
 			html += '<tr>';
 			html += '<td class="time">' + game.time + '</td>';
 			html += '<td class="court">' + game.court + '</td>';
-			html += '<td class="home">' + game.home + '</td>';
-			html += '<td class="visitor">' + game.visitor + '</td>';
+			html += '<td class="home team team-' + homeTeamNdx + '">' + game.home + '</td>';
+			html += '<td class="visitor team team-' + visitorTeamNdx + '">' + game.visitor + '</td>';
 			html += '</tr>';
 		});
 
 		html += '</table>';
 
 		$el.html(html);
+
+		var teamRows = $el.find('tr'),
+			teamCells = $el.find('.team');
+
+		$el.find('.team-select select').change(function() {
+			var ndx = $(this).val();
+
+			teamRows.removeClass('chosen');
+			teamCells.removeClass('chosen');
+
+			if (ndx) {
+				$el
+					.find('.team-' + ndx)
+					.addClass('chosen')
+					.closest('tr')
+					.addClass('chosen');
+			}
+		});
 	});
 })(jQuery);
