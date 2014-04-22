@@ -1,6 +1,34 @@
-<div id="bocce-schedule">loading...</div>
+<div id="bocce-schedule"></div>
 
 <style>
+#bocce-schedule .tabs {
+	margin-bottom: 1em;
+	text-align: center;
+}
+
+#bocce-schedule .tabs li {
+	display: inline-block;
+	margin: 0 5px !important;
+	padding: 0.25em 0.5em;
+	border: 1px solid #CCC;
+	border-radius: 3px;
+	background-color: #F6F6F6;
+	cursor: pointer;
+}
+
+#bocce-schedule .tabs li:hover {
+	background-color: #FFF;
+}
+
+#bocce-schedule .tabs li.current {
+	background-color: #FFF;
+}
+
+#bocce-schedule h1 {
+	margin-bottom: 0.5em;
+	text-align: center;
+}
+
 #bocce-schedule table {
 	margin: 0 auto;
 	border-collapse: collapse;
@@ -20,22 +48,72 @@
 <script>
 jQuery(function($) {
 	var key = '1HJP6Ws5T5zQ4F6QW3UGrJb_Cj8VlsAcugxt8xFIpO7s',
-		url = 'https://spreadsheets.google.com/feeds/list/' + key + '/od6/public/basic?alt=json';
+		divisions = [
+			{
+				button: 'Sun/Mon',
+				title: "Sunday - Monday Division",
+				sheet: '2096572205'
+			},
+			{
+				button: 'Tues/Weds',
+				title: "Tuesday - Wednesday Division",
+				sheet: '1511857299'
+			},
+			{
+				button: 'Thurs/Fri',
+				title: "Thursday - Friday Division",
+				sheet: '34811725'
+			},
+			{
+				button: 'Sat/Sun',
+				title: "Saturday - Sunday Division",
+				sheet: '1623939713'
+			},
+		];
 
-	$.getJSON(url, function(data) {
+	var tabs = $('<ul>').appendTo('#bocce-schedule').addClass('tabs'),
+		contents = $('<div>').appendTo('#bocce-schedule');
+
+	$.each(divisions, function(ndx, division) {
+		var tab = $('<li>').appendTo(tabs).text(division.button),
+			content = $('<div class="division"><h1>' + division.title + '</h1></div>').appendTo(contents),
+			schedule = $('<div>loading...</div>').appendTo(content),
+			url = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + division.sheet + '/public/basic?alt=json';
+
+		$.getJSON(url, function(data) {
+			var games = getGames(data);
+			schedule.html(scheduleHtml(games));
+		});
+
+		tab.click(function() {
+			tabs.find('li').removeClass('current');
+			tab.addClass('current');
+
+			$('#bocce-schedule .division').hide();
+			content.show();
+		});
+	});
+
+	tabs.find('li:first-child').click()
+
+	function getGames(data) {
 		var games = $.map(data.feed.entry, function(entry) {
-			var cells = $.map(entry.content['$t'].split(','), function(cell) {
+			var cells = $.map(entry.content.$t.split(','), function(cell) {
 				return cell.replace(/^.*: /, '');
 			});
 
 			return {
-				time: entry.title['$t'],
+				time: entry.title.$t,
 				court: cells[0],
 				home: cells[1],
 				visitor: cells[2]
 			};
 		});
 
+		return games;
+	}
+
+	function scheduleHtml(games) {
 		var html = '<table>';
 
 		html += '<tr>';
@@ -58,7 +136,7 @@ jQuery(function($) {
 
 		html += '</table>';
 
-		$('#bocce-schedule').html(html);
-	});
+		return html;
+	}
 });
 </script>
