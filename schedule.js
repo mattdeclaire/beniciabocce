@@ -53,7 +53,7 @@
 			var homeTeamNdx = $.inArray(game.home, teams),
 				visitorTeamNdx = $.inArray(game.visitor, teams);
 
-			html += '<tr>';
+			html += '<tr class="game">';
 			html += '<td class="time">' + game.time + '</td>';
 			html += '<td class="court">' + game.court + '</td>';
 			html += '<td class="home team team-' + homeTeamNdx + '">' + game.home + '</td>';
@@ -65,21 +65,20 @@
 
 		$el.html(html);
 
-		var teamRows = $el.find('tr'),
+		var teamRows = $el.find('.game'),
 			teamCells = $el.find('.team');
 
 		$el.find('.team-select select').change(function() {
 			var ndx = $(this).val();
 
-			teamRows.removeClass('chosen');
+			teamRows.show();
 			teamCells.removeClass('chosen');
 
 			if (ndx) {
-				$el
-					.find('.team-' + ndx)
-					.addClass('chosen')
-					.closest('tr')
-					.addClass('chosen');
+				teamRows.hide();
+				var chosen = $el.find('.team-' + ndx);
+				chosen.closest('tr').show();
+				chosen.addClass('chosen');
 			}
 		});
 	});
