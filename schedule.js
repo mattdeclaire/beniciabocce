@@ -1,8 +1,8 @@
-(function($) {
+function bocceSchedule(sheet) {
 	var key = '1HJP6Ws5T5zQ4F6QW3UGrJb_Cj8VlsAcugxt8xFIpO7s',
-		sheet = '2096572205',
+		$ = jQuery,
 		$el = $('#bocce-schedule'),
-		url = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + sheet + '/public/basic?alt=json';
+		url = 'https://spreadsheets.google.com/feeds/list/' + key + '/' + sheet + '/public/basic?alt=json&callback=?';
 
 	$el.html('<div class="loading">loading...</div>');
 
@@ -31,7 +31,7 @@
 
 		html += '<div class="team-select">';
 		html += '<select>';
-		html += '<option value="">choose a team</option>';
+		html += '<option value="">all teams</option>';
 		$.each(teams, function(ndx, team) {
 			html += '<option value="' + ndx + '">' + team + '</option>';
 		});
@@ -82,4 +82,4 @@
 			}
 		});
 	});
-})(jQuery);
+}
